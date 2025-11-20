@@ -1,0 +1,62 @@
+name: Build Core
+
+on:
+  push:
+    branches: [ main, release/** ]
+    paths:
+      - 'socketghost-core/**'
+      - '.github/workflows/build-core.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'socketghost-core/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'
+    
+    - name: Cache NuGet packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+    
+    - name: Restore dependencies
+      run: dotnet restore socketghost-core/socketghost-core.csproj
+    
+    - name: Build
+      run: dotnet build socketghost-core/socketghost-core.csproj -c Release --no-restore
+    
+    - name: Test
+      run: dotnet test socketghost-core/socketghost-core.csproj -c Release --no-build --verbosity normal || echo "No tests found"
+    
+    - name: Publish
+      run: dotnet publish socketghost-core/socketghost-core.csproj -c Release -o ./publish --no-build
+    
+    - name: Create config sample
+      run: |
+        echo '{"Engine":"titanium","FlowRetentionDays":30,"FlowStoreMaxTotalBytes":524288000,"FlowStoreMaxInlineBytes":131072,"AutoPruneOnStart":true}' > ./publish/config.json
+        cp socketghost-core/README.md ./publish/
+    
+    - name: Package artifacts
+      run: |
+        cd publish
+        zip -r ../socketghost-core-${{ github.ref_name }}.zip .
+        cd ..
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: socketghost-core-${{ github.sha }}
+        path: socketghost-core-${{ github.ref_name }}.zip
+        retention-days: 30

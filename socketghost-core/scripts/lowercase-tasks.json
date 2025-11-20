@@ -1,0 +1,8 @@
+{
+    "Id": "lowercase-tasks",
+    "Name": "LowercaseTasks",
+    "Enabled": false,
+    "Code": "function onRequest(flow){\n  if(flow.request.url.includes('/todo') && flow.request.method === 'POST'){\n    try {\n      var body = JSON.parse(flow.request.body);\n      if(body.task){\n        body.task = body.task.toLowerCase();\n        setRequestBody(JSON.stringify(body));\n      }\n    } catch(e) {}\n  }\n}",
+    "CreatedAt": "2025-11-20T00:00:00Z",
+    "UpdatedAt": "2025-11-20T00:00:00Z"
+}

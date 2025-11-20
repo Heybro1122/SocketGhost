@@ -1,0 +1,12 @@
+{
+  "FlowRetentionDays": 30,
+  "FlowStoreMaxTotalBytes": 524288000,
+  "FlowStoreMaxInlineBytes": 131072,
+  "AutoPruneOnStart": true,
+  "Engine": "titanium",
+  "Mitm": {
+    "PythonPath": "python3",
+    "MitmPort": 8081,
+    "IngestPort": 9001
+  }
+}

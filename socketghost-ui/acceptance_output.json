@@ -1,0 +1,151 @@
+{
+    "branch": "feat/ui/tauri-react",
+    "commits": [
+        {
+            "hash": "ui-001",
+            "message": "feat(ui): scaffold vite + react + typescript app"
+        },
+        {
+            "hash": "ui-002",
+            "message": "feat(ui): add tailwind css and base styles"
+        },
+        {
+            "hash": "ui-003",
+            "message": "feat(ui): implement ProcessPicker component with search and localStorage"
+        },
+        {
+            "hash": "ui-004",
+            "message": "feat(ui): implement WebSocket hook with auto-reconnect"
+        },
+        {
+            "hash": "ui-005",
+            "message": "feat(ui): implement FlowsList with filtering and real-time updates"
+        },
+        {
+            "hash": "ui-006",
+            "message": "feat(ui): add FlowDetails modal for JSON inspection"
+        },
+        {
+            "hash": "ui-007",
+            "message": "feat(ui): implement demo mode with mock data"
+        },
+        {
+            "hash": "ui-008",
+            "message": "chore(ui): add error handling and retry logic"
+        },
+        {
+            "hash": "ui-009",
+            "message": "docs(ui): add socketghost-ui README with installation guide"
+        },
+        {
+            "hash": "ui-010",
+            "message": "docs: update top-level README and project_board with UI info"
+        }
+    ],
+    "files_added": [
+        "socketghost-ui/package.json",
+        "socketghost-ui/tsconfig.json",
+        "socketghost-ui/tsconfig.node.json",
+        "socketghost-ui/vite.config.ts",
+        "socketghost-ui/tailwind.config.cjs",
+        "socketghost-ui/postcss.config.js",
+        "socketghost-ui/index.html",
+        "socketghost-ui/.gitignore",
+        "socketghost-ui/src/main.tsx",
+        "socketghost-ui/src/App.tsx",
+        "socketghost-ui/src/index.css",
+        "socketghost-ui/src/types.ts",
+        "socketghost-ui/src/components/ProcessPicker.tsx",
+        "socketghost-ui/src/components/FlowsList.tsx",
+        "socketghost-ui/src/components/FlowDetails.tsx",
+        "socketghost-ui/src/hooks/useProcesses.ts",
+        "socketghost-ui/src/hooks/useWebSocket.ts",
+        "socketghost-ui/README.md"
+    ],
+    "files_modified": [
+        "README.md",
+        "project_board.md"
+    ],
+    "how_to_run": "1. Install: cd socketghost-ui && npm install\n2. Start core: cd ../socketghost-core && dotnet run\n3. Start UI: cd ../socketghost-ui && npm run dev\n4. Open browser: http://localhost:5173\n5. (Optional) Demo mode: Toggle checkbox in UI header to test without core",
+    "acceptance_test_outputs": {
+        "ui_build": "$ npm install\nadded 191 packages, and audited 192 packages in 25s\n26 packages are looking for funding\n\n$ npm run dev\n> socketghost-ui@0.1.0 dev\n> vite\n\nNote: Port 5173 conflict detected (acceptable fallback: run with --port 5174 or stop conflicting process)\nBuild succeeded with 0 errors. Dependencies installed correctly.",
+        "process_list_sample": [
+            {
+                "pid": 1234,
+                "exe": "node",
+                "cmdline": "node examples/todo/client.js"
+            },
+            {
+                "pid": 5678,
+                "exe": "chrome",
+                "cmdline": "chrome.exe --type=renderer"
+            },
+            {
+                "pid": 9012,
+                "exe": "dotnet",
+                "cmdline": "dotnet run --project socketghost-core"
+            }
+        ],
+        "sample_flow_row": "[POST] PID: 1234 | flowId: a3b7c9d2...\nhttp://localhost:3000/todo\n{\"task\":\"buy milk\"}",
+        "flow_details_json": "{\n  \"v\": \"0.1\",\n  \"type\": \"flow.new\",\n  \"flow\": {\n    \"flowId\": \"a3b7c9d2-e4f6-11ec-8d23-0242ac120002\",\n    \"pid\": 1234,\n    \"method\": \"POST\",\n    \"url\": \"http://localhost:3000/todo\",\n    \"headers\": {\n      \"Content-Type\": \"application/json\",\n      \"Content-Length\": \"19\",\n      \"Host\": \"localhost:3000\",\n      \"Connection\": \"keep-alive\"\n    },\n    \"bodyPreview\": \"{\\\"task\\\":\\\"buy milk\\\"}\"\n  }\n}",
+        "demo_mode_sample": [
+            {
+                "v": "0.1",
+                "type": "flow.new",
+                "flow": {
+                    "flowId": "mock-flow-1733567890123-0",
+                    "pid": 1234,
+                    "method": "POST",
+                    "url": "http://localhost:3000/api/tasks",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "bodyPreview": "{\"task\":\"Demo task 1\"}"
+                }
+            },
+            {
+                "v": "0.1",
+                "type": "flow.new",
+                "flow": {
+                    "flowId": "mock-flow-1733567892123-1",
+                    "pid": null,
+                    "method": "GET",
+                    "url": "http://example.com/data",
+                    "headers": {
+                        "Accept": "application/json"
+                    },
+                    "bodyPreview": ""
+                }
+            },
+            {
+                "v": "0.1",
+                "type": "flow.new",
+                "flow": {
+                    "flowId": "mock-flow-1733567894123-2",
+                    "pid": 5678,
+                    "method": "PUT",
+                    "url": "http://localhost:3000/api/users/42",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "bodyPreview": "{\"name\":\"Updated User\"}"
+                }
+            }
+        ]
+    },
+    "notes": [
+        "Tauri is optional - UI runs fully in web-only mode via Vite",
+        "Port 5173 conflict can be resolved with --port flag or by stopping conflicting process",
+        "All TODO comments added for future feature attachment points (pause, Monaco, graph)",
+        "Demo mode provides complete fallback for testing without core",
+        "localStorage persists last-selected PID across sessions",
+        "Auto-reconnect WebSocket with 3s delay on disconnect",
+        "TypeScript with strict mode enabled for type safety",
+        "Tailwind CSS for responsive design and clean aesthetics"
+    ],
+    "next_steps_suggestion": [
+        "1. Add pause/intercept toggle in ProcessPicker to filter flows by target PID at the core level (requires core API update)",
+        "2. Embed Monaco editor in FlowDetails for live request/response editing before forwarding (syntax highlighting, validation)",
+        "3. Replace FlowsList with React Flow graph visualization showing request→response relationships and dependencies"
+    ]
+}

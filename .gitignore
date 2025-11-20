@@ -1,0 +1,129 @@
+# Build outputs
+bin/
+obj/
+publish/
+dist/
+out/
+build/
+
+# Artifacts (releases should be built via CI/CD)
+artifacts/
+*.zip
+*.tar.gz
+*.msi
+*.dmg
+*.exe
+*.dll
+!socketghost-core/bin/
+!socketghost-core/obj/
+
+# Dependencies
+node_modules/
+packages/
+.nuget/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.swp
+*~
+.editorconfig
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# Environment
+.env
+.env.local
+.env.*.local
+*.envrc
+
+# Storage & Runtime
+storage/
+*.db
+*.db-shm
+*.db-wal
+flows/
+flow_storage/
+
+# Certificates
+*.pem
+*.crt
+*.key
+*.p12
+*.pfx
+.mitmproxy/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.cache
+*_error.txt
+*_output.txt
+*.error
+errors.txt
+build_error*.txt
+build_diag.txt
+build_output.txt
+
+# Test outputs
+TestResults/
+coverage/
+*.trx
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+
+# Python (for mitm adapter)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+ENV/
+env/
+
+# Rust (Tauri)
+target/
+Cargo.lock
+**/target/
+
+# Internal reports and planning docs (DO NOT COMMIT)
+*_report.json
+*_report.md
+*_DELIVERABLE.json
+RELEASE_v*.json
+RELEASE_DRAFT.md
+RELEASE_NOTES.md
+RELEASE_PUBLISH_INSTRUCTIONS.md
+RELEASE_SIGNING.md
+RELEASE_FINALIZED.json
+SECURITY-AUDIT.md
+E2E_TEST_SUCCESS.md
+FLOW_HISTORY_FINAL_REPORT.md
+project_concept.md
+project_board.md
+mitm-adapter-deliverable.json
+docs/README-updates.md
+
+# Test files
+test-interceptor.js
+
+# Editor artifacts
+*.code-workspace

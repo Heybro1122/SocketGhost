@@ -1,0 +1,100 @@
+name: Build UI
+
+on:
+  push:
+    branches: [ main, release/** ]
+    paths:
+      - 'socketghost-ui/**'
+      - '.github/workflows/build-ui.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'socketghost-ui/**'
+
+jobs:
+  build-web:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: socketghost-ui/package-lock.json
+    
+    - name: Install dependencies
+      run: |
+        cd socketghost-ui
+        npm ci
+    
+    - name: Build web bundle
+      run: |
+        cd socketghost-ui
+        npm run build
+    
+    - name: Create release README
+      run: |
+        cat > socketghost-ui/dist/README_RELEASE.txt << 'EOF'
+        SocketGhost UI - Web Bundle
+        ============================
+        
+        To serve: python3 -m http.server 5173
+        Then open: http://localhost:5173
+        
+        Ensure SocketGhost Core is running.
+        EOF
+        cp socketghost-ui/README.md socketghost-ui/dist/
+    
+    - name: Package web bundle
+      run: |
+        cd socketghost-ui/dist
+        zip -r ../../socketghost-ui-web-${{ github.ref_name }}.zip .
+        cd ../..
+    
+    - name: Upload web bundle
+      uses: actions/upload-artifact@v3
+      with:
+        name: socketghost-ui-web-${{ github.sha }}
+        path: socketghost-ui-web-${{ github.ref_name }}.zip
+        retention-days: 30
+  
+  build-native-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: socketghost-ui/package-lock.json
+    
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+    
+    - name: Rust cache
+      uses: swatinem/rust-cache@v2
+      with:
+        workspaces: './socketghost-ui/src-tauri -> target'
+    
+    - name: Install dependencies
+      run: |
+        cd socketghost-ui
+        npm ci
+    
+    - name: Build Tauri app
+      run: |
+        cd socketghost-ui
+        npm run tauri build
+    
+    - name: Upload Windows installer
+      uses: actions/upload-artifact@v3
+      with:
+        name: socketghost-ui-windows-${{ github.sha }}
+        path: socketghost-ui/src-tauri/target/release/bundle/msi/*.msi
+        retention-days: 30

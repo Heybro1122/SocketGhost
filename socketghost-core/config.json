@@ -1,0 +1,6 @@
+{
+  "FlowRetentionDays": 30,
+  "FlowStoreMaxTotalBytes": 524288000,
+  "FlowStoreMaxInlineBytes": 131072,
+  "AutoPruneOnStart": true
+}

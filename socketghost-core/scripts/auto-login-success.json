@@ -1,0 +1,8 @@
+{
+    "Id": "auto-login-success",
+    "Name": "AutoLoginSuccess",
+    "Enabled": false,
+    "Code": "function onResponse(flow){\n  if(flow.request.url.includes('/login')){\n    setResponseBody(JSON.stringify({status:'success'}));\n    setResponseHeader('Content-Type','application/json');\n  }\n}",
+    "CreatedAt": "2025-11-20T00:00:00Z",
+    "UpdatedAt": "2025-11-20T00:00:00Z"
+}

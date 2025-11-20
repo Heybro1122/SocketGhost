@@ -1,0 +1,108 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: SocketGhost ${{ github.ref_name }}
+        draft: true
+        prerelease: false
+        body_path: RELEASE_DRAFT.md
+
+  build-artifacts:
+    needs: create-release
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact: core
+          - os: ubuntu-latest
+            artifact: ui-web
+          - os: windows-latest
+            artifact: ui-native
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    # Core build
+    - name: Setup .NET (Core)
+      if: matrix.artifact == 'core'
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'
+    
+    - name: Build Core
+      if: matrix.artifact == 'core'
+      run: |
+        chmod +x scripts/package_core.sh
+        ./scripts/package_core.sh
+    
+    # UI Web build
+    - name: Setup Node.js (UI)
+      if: matrix.artifact == 'ui-web' || matrix.artifact == 'ui-native'
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Build UI Web
+      if: matrix.artifact == 'ui-web'
+      run: |
+        chmod +x scripts/package_ui.sh
+        ./scripts/package_ui.sh
+    
+    # UI Native build (Windows)
+    - name: Setup Rust (Native)
+      if: matrix.artifact == 'ui-native'
+      uses: dtolnay/rust-toolchain@stable
+    
+    - name: Build UI Native
+      if: matrix.artifact == 'ui-native'
+      run: |
+        cd socketghost-ui
+        npm ci
+        npm run build
+        npm run tauri build
+        mkdir -p ../artifacts
+        cp src-tauri/target/release/bundle/msi/*.msi ../artifacts/
+    
+    # Generate checksums
+    - name: Generate checksums
+      run: |
+        cd artifacts
+        if command -v sha256sum &> /dev/null; then
+          sha256sum * > sha256sums.txt
+        else
+          shasum -a 256 * > sha256sums.txt
+        fi
+    
+    # Upload artifacts to release
+    - name: Upload Release Assets
+      uses: softprops/action-gh-release@v1
+      with:
+        files: artifacts/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
