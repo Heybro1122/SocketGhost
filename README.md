@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![SocketGhost Logo](assets/SocketGhost.png)
+![SocketGhost Logo](https://raw.githubusercontent.com/Heybro1122/SocketGhost/master/assets/SocketGhost.png)
 
 **The Visual Protocol Interceptor**
 
